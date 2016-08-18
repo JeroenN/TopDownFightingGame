@@ -9,7 +9,7 @@
  * 2 -> X
  * 3 -> Y
  * 4-> LB
- * 5 -> LT
+ * 5 -> RB
 */
 int main()
 {
@@ -35,6 +35,9 @@ int main()
   //float showPosition=0;
   float playerSpeed = 7;
   float weapon1Rotation =0;
+  float player1Rotation=0;
+  float swordReady=1;
+  float swordSwingTime=0;
 
 
                 sf::RenderWindow window(
@@ -87,6 +90,20 @@ int main()
                            window.close();
                            return 0;
                        }
+                       swordReady +=0.01;
+                       if(swordReady>1)
+                       {
+                           if (sf::Joystick::isButtonPressed(0, 4))
+                           {
+                           for(int i=0; i<900; ++i)
+                           {
+                           weapon1Rotation +=i/10;
+                           std::cout<<weapon1Rotation << '\n';
+                           }
+                           std::cout<<"sword";
+                           swordReady =0;
+                           }
+                       }
                        sf::RectangleShape weapon1;
 
 
@@ -94,6 +111,7 @@ int main()
                        player1.setSize(sf::Vector2f(30, 30));
                        player1.setPosition(player1X, player1Y);
                        player1.setOrigin(sf::Vector2f(15,15));
+                       player1.setRotation(hoekSword);
 
                        player1PositionX= player1.getPosition().x;
                        player1PositionY= player1.getPosition().y;
@@ -101,9 +119,10 @@ int main()
                        weapon1.setSize(sf::Vector2f(70,8));
                        weapon1.setPosition(player1PositionX,player1PositionY);
                        weapon1.setOrigin(sf::Vector2f(0,4));
-                       weapon1Rotation= hoekSword;
+
                        //weapon1.setRotation(45);
-                       weapon1.rotate(weapon1Rotation);
+                       weapon1.rotate(hoekSword+weapon1Rotation);
+                       std::cout<<weapon1Rotation << '\n';
 
 
 
@@ -286,6 +305,8 @@ int main()
                            }
                        }
 
+
+
                        player1SwordX= sf::Joystick::getAxisPosition(0, sf::Joystick::U);
                        player1SwordY= sf::Joystick::getAxisPosition(0, sf::Joystick::R);
 
@@ -299,7 +320,7 @@ int main()
 
                                if(player1SwordX<0 && player1SwordY>0)
                                {
-                                   multiplierSword= 100.0/player1SwordX*-1.0;
+                                   multiplierSword= 100.0/player1SwordY;
                                    positieSword = 1;
                                }
 
@@ -311,34 +332,46 @@ int main()
 
                                if(player1SwordX>0 && player1SwordY<0)
                                {
-                                   multiplierSword= 100.0/player1SwordX;
+                                   multiplierSword= 100.0/player1SwordY;
                                    positieSword = 3;
                                }
 
-                               player1SwordY *=multiplierSword;
-                               player1SwordX *=multiplierSword;
-                               std::cout<<"playerX: "<< player1SwordX <<"\n";
-                               std::cout<<"playerY: "<< player1SwordY <<"\n";
 
-                               hoekSword = atan(player1SwordY/100) * 180 / PI;
+                               //std::cout<<"playerX: "<< player1SwordX <<"\n";
+                               //std::cout<<"playerY: "<< player1SwordY <<"\n";
+
+
 
                                switch(positieSword)
                                {
                                case 0 :
+                               player1SwordY *=multiplierSword;
+                               player1SwordX *=multiplierSword;
+                               hoekSword = atan(player1SwordY/100) * 180 / PI;
                                hoekSword +=0;
-                               std::cout<<positieSword<< "\n";
+
+                               //std::cout<<positieSword<< "\n";
                                    break;
                                case 1 :
+                                   player1SwordY *=multiplierSword;
+                                   player1SwordX *=multiplierSword *-1;
+                                   hoekSword = atan(player1SwordX/100) * 180 / PI;
                                    hoekSword +=90;
-                                   std::cout<<positieSword<< "\n";
+                                   //std::cout<<positieSword<< "\n";
                                    break;
                                case 2 :
+                                   player1SwordY *=multiplierSword*-1;
+                                   player1SwordX *=multiplierSword;
+                                   hoekSword = atan(player1SwordY/100) * 180 / PI;
                                    hoekSword +=180;
-                                   std::cout<<positieSword<< "\n";
+                                   //std::cout<<positieSword<< "\n";
                                    break;
                                case 3 :
+                                   player1SwordY *=multiplierSword;
+                                   player1SwordX *=multiplierSword*-1;
+                                   hoekSword = atan(player1SwordX/100) * 180 / PI;
                                    hoekSword +=270;
-                                   std::cout<<positieSword<< "\n";
+                                   //std::cout<<positieSword<< "\n";
                                    break;
 
                                }
